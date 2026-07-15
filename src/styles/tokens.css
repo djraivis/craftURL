@@ -1,0 +1,129 @@
+/* -------------------------------------------------------------------------
+   Theme tokens — Transmission
+   Cool studio bench + ink URL ribbon + cue amber (craft a launch signal)
+--------------------------------------------------------------------------- */
+
+:root,
+[data-theme='transmission'] {
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-ui: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --bg-deep: #d8dee8;
+  --bg-mid: #e4e9f1;
+  --bg-surface: #f3f5f8;
+  --bg-elevated: #ffffff;
+  --bg-glass: rgba(243, 245, 248, 0.92);
+
+  --border-subtle: rgba(18, 28, 45, 0.1);
+  --border-strong: rgba(18, 28, 45, 0.2);
+  --border-accent: rgba(196, 105, 12, 0.55);
+
+  --text-primary: #141c2b;
+  --text-secondary: #3d4a5f;
+  --text-muted: #6b778c;
+
+  --accent: #c4690c;
+  --accent-strong: #9a4f08;
+  --accent-soft: rgba(196, 105, 12, 0.12);
+  --accent-glow: rgba(196, 105, 12, 0.22);
+
+  --success: #1f7a4c;
+  --success-soft: rgba(31, 122, 76, 0.12);
+  --warning: #b45309;
+  --danger: #c23b4a;
+  --info: #2f5f8a;
+
+  --section-a: #c4690c;
+  --section-a-soft: rgba(196, 105, 12, 0.07);
+  --section-a-border: rgba(196, 105, 12, 0.22);
+  --section-b: #2f5f8a;
+  --section-b-soft: rgba(47, 95, 138, 0.07);
+  --section-b-border: rgba(47, 95, 138, 0.2);
+
+  /* Ink ribbon (URL bar + Tuner) — scoped local palette */
+  --ink: #12151c;
+  --ink-elevated: #1c212b;
+  --ink-text: #ebe7df;
+  --ink-muted: #8b929e;
+  --ink-accent: #f0a202;
+  --ink-accent-soft: rgba(240, 162, 2, 0.16);
+  --ink-success: #3ecf8e;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+
+  --space-page: 1.25rem;
+  --space-section: 1rem;
+  --space-group: 0.85rem;
+  --space-stack: 1.35rem;
+  /* Shared content rail — URL bar + Host/Content panels */
+  --layout-max: 72rem;
+  --layout-width: min(80%, var(--layout-max));
+  --layout-pad-x: var(--space-page);
+  --control-height: 2.15rem;
+  --control-pad-x: 0.85rem;
+  --control-pad-y: 0.45rem;
+  --control-font: 0.8125rem;
+  --label-gap: 0.35rem;
+
+  --font-size-label: 0.6875rem;
+  --font-size-meta: 0.75rem;
+  --font-size-ui: 0.8125rem;
+  --font-size-body: 0.875rem;
+  --font-size-brand: clamp(1.85rem, 3.2vw, 2.35rem);
+
+  --shadow-surface: 0 1px 0 rgba(255, 255, 255, 0.65) inset, 0 10px 28px rgba(20, 32, 54, 0.08);
+  --shadow-active: 0 0 0 2px rgba(196, 105, 12, 0.28);
+
+  --bg-atmosphere:
+    radial-gradient(70% 45% at 12% -8%, rgba(240, 162, 2, 0.14), transparent 52%),
+    radial-gradient(55% 40% at 92% 8%, rgba(47, 95, 138, 0.12), transparent 48%),
+    linear-gradient(160deg, #eef2f7 0%, var(--bg-deep) 42%, #cfd7e4 100%);
+
+  --freq-line: rgba(18, 28, 45, 0.045);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: var(--font-ui);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+}
+
+@keyframes atmosphere-drift {
+  0%,
+  100% {
+    background-position: 0% 40%, 100% 0%, 0 0;
+  }
+  50% {
+    background-position: 18% 48%, 82% 12%, 0 0;
+  }
+}
+
+@keyframes cue-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+}
