@@ -1,25 +1,14 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { BookMarked, Radio } from 'lucide-react';
-import { siteAllowsPlatformQuery } from '../constants/environments';
 import { APP_VERSION } from '../constants/version';
-import type { VersionInfo } from '../types';
-import { getDeeplinkContextFacts, getSiteContextFacts } from '../utils/siteContext';
-import { InfoPanel } from './InfoPanel';
+import { CopyButton, LoadButton } from './url/UrlActionButtons';
 
 interface HeaderProps {
-  app: string;
-  name: string;
-  environmentType: string;
-  platform: string;
-  variant: string;
-  path: string;
-  isDeeplinksEnabled: boolean;
-  selectedDeeplink: string;
-  versionInfo: VersionInfo | null;
-  versionError: string | null;
+  urlReady: boolean;
+  onCopy: () => void | boolean | Promise<void | boolean>;
+  onOpen: () => void;
   showUrlLegend: boolean;
-  isTunerMode: boolean;
   onToggleUrlLegend: () => void;
   onEnterTunerMode: () => void;
 }
@@ -56,27 +45,14 @@ const ModeChip: React.FC<ModeChipProps> = ({
 );
 
 export const Header: React.FC<HeaderProps> = ({
-  app,
-  name,
-  environmentType,
-  platform,
-  variant,
-  path,
-  isDeeplinksEnabled,
-  selectedDeeplink,
-  versionInfo,
-  versionError,
+  urlReady,
+  onCopy,
+  onOpen,
   showUrlLegend,
-  isTunerMode,
   onToggleUrlLegend,
   onEnterTunerMode
 }) => {
   const reduceMotion = useReducedMotion();
-  const envInfo = app ? getSiteContextFacts(environmentType, name) : null;
-  const deeplinkInfo =
-    isDeeplinksEnabled && selectedDeeplink
-      ? getDeeplinkContextFacts(selectedDeeplink)
-      : null;
 
   return (
     <div className="space-y-[var(--space-stack)]">
@@ -87,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
           duration: reduceMotion ? 0 : 0.55,
           ease: [0.22, 1, 0.36, 1]
         }}
-        className="flex items-center justify-between gap-4 flex-wrap"
+        className="header-toolbar"
       >
         <div className="brand-lockup shrink-0">
           <span className="brand-cue" aria-hidden />
@@ -99,7 +75,12 @@ export const Header: React.FC<HeaderProps> = ({
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-[var(--space-group)] shrink-0">
+        <div className="header-url-actions">
+          <CopyButton placement="header" isComplete={urlReady} onClick={onCopy} />
+          <LoadButton placement="header" isComplete={urlReady} onClick={onOpen} />
+        </div>
+
+        <div className="header-mode-actions">
           <ModeChip
             active={showUrlLegend}
             onClick={onToggleUrlLegend}
@@ -108,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
             title="Label each part of the URL (protocol, site, environment, platform, …)"
           />
           <ModeChip
-            active={isTunerMode}
+            active={false}
             onClick={onEnterTunerMode}
             icon={<Radio size={16} />}
             label="Tuner"
@@ -117,20 +98,6 @@ export const Header: React.FC<HeaderProps> = ({
           />
         </div>
       </motion.div>
-
-      <InfoPanel
-        version={versionInfo ?? undefined}
-        versionError={versionError}
-        app={app}
-        platform={siteAllowsPlatformQuery(name) ? platform : undefined}
-        variant={variant}
-        use={envInfo?.use}
-        purpose={envInfo?.purpose}
-        destination={deeplinkInfo?.destination}
-        format={deeplinkInfo?.format}
-        isDeeplinksEnabled={isDeeplinksEnabled}
-        deeplinkPath={path}
-      />
     </div>
   );
 };

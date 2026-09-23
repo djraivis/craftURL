@@ -17,10 +17,9 @@ Source of truth: `src/utils/urlBuilder.ts`, `src/constants/deeplinks.ts`, `src/c
 
 1. `https://{app}-{site}.{env}.co.uk`  
    - Exception: Preprod Chromecast → `https://chromecast.ppuktv.co.uk`
-2. If **version check**: append `/version.txt` on the domain root and **stop** (no platform query, no deeplink).
-3. Else if deeplink path: append `/{path}`.
-4. Else if platform query only: ensure `/` before `?` on the domain root.
-5. Append platform query **last** (after deeplink when both exist). After a deeplink path, no extra `/` is required before `?`.
+2. If deeplink path: append `/{path}`.
+3. Else if platform query only: ensure `/` before `?` on the domain root.
+4. Append platform query **last** (after deeplink when both exist). After a deeplink path, no extra `/` is required before `?`.
 
 ## Example shapes
 
@@ -40,12 +39,6 @@ Production + variant:
 
 ```
 https://ctv-amazonfire.uktv.co.uk/?brand=amazon&model=firetv
-```
-
-Version check:
-
-```
-https://ctv-dev1.ppdevuktv.co.uk/version.txt
 ```
 
 ## Site rules

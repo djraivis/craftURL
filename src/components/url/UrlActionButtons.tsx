@@ -7,8 +7,9 @@ const COPIED_RESET_MS = 1800;
 
 export const CopyButton = memo<{
   isComplete: boolean;
+  placement?: 'bar' | 'header';
   onClick?: () => void | boolean | Promise<void | boolean>;
-}>(({ isComplete, onClick }) => {
+}>(({ isComplete, placement = 'bar', onClick }) => {
   const [copied, setCopied] = useState(false);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -40,9 +41,9 @@ export const CopyButton = memo<{
         void handleClick();
       }}
       disabled={!isComplete}
-      className={`url-hero-action-wide ${isComplete ? '' : 'is-disabled'} ${
-        copied ? 'is-copied' : ''
-      }`}
+      className={`${placement === 'header' ? 'header-action' : 'url-hero-action-wide'} ${
+        isComplete ? '' : 'is-disabled'
+      } ${copied ? 'is-copied' : ''}`}
       title={
         !isComplete ? INCOMPLETE_HINT : copied ? 'Copied to clipboard' : 'Copy URL to clipboard'
       }
@@ -55,7 +56,7 @@ export const CopyButton = memo<{
       }
     >
       {copied ? <Check size={17} aria-hidden /> : <Copy size={17} aria-hidden />}
-      <span className="text-xs font-medium">{copied ? 'Copied' : 'Copy'}</span>
+      <span className="font-medium">{copied ? 'Copied' : 'Copy'}</span>
       <span className="sr-only" aria-live="polite">
         {copied ? 'URL copied to clipboard' : ''}
       </span>
@@ -67,19 +68,22 @@ CopyButton.displayName = 'CopyButton';
 
 export const LoadButton = memo<{
   isComplete: boolean;
+  placement?: 'bar' | 'header';
   onClick?: () => void;
-}>(({ isComplete, onClick }) => (
+}>(({ isComplete, placement = 'bar', onClick }) => (
   <motion.button
     whileTap={isComplete ? { scale: 0.95 } : undefined}
     type="button"
     onClick={onClick}
     disabled={!isComplete}
-    className={`url-hero-action-wide url-hero-load ${isComplete ? '' : 'is-disabled'}`}
+    className={`${placement === 'header' ? 'header-action header-action-load' : 'url-hero-action-wide url-hero-load'} ${
+      isComplete ? '' : 'is-disabled'
+    }`}
     title={isComplete ? 'Open URL in a new tab' : INCOMPLETE_HINT}
     aria-label={isComplete ? 'Open URL in a new tab' : `Load URL unavailable. ${INCOMPLETE_HINT}`}
   >
     <Play size={17} className={isComplete ? 'fill-current' : ''} aria-hidden />
-    <span className="text-xs font-semibold">Load</span>
+    <span className="font-semibold">Load</span>
   </motion.button>
 ));
 

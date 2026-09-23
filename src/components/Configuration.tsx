@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutGrid as Layout, Clapperboard, Lock, Tag } from 'lucide-react';
+import { LayoutGrid as Layout, Clapperboard } from 'lucide-react';
 import {
   CTV_ENVIRONMENTS,
   CTV_PPDEV_DEVELOPMENT_ENVIRONMENTS,
@@ -29,12 +29,10 @@ interface ConfigurationProps {
   platform: string;
   variant: string;
   selectedDeeplink: string;
-  isVersionMode: boolean;
   onEnvironmentTypeSelect: (env: { id: string; domain: string }) => void;
   onNameSelect: (name: { url?: string; domain?: string }) => void;
   onPlatformSelect: (platform: string) => void;
   onVariantSelect: (variant: string) => void;
-  onVersionCheck: () => void;
   onContentChange: (
     brand: ScheduleBrand | null,
     episode: ScheduleEpisode | null
@@ -74,7 +72,7 @@ const Chip: React.FC<{
     disabled={disabled}
     title={title}
     aria-pressed={active}
-    className={`terminal-button !min-h-0 !h-7 px-2 text-[11px] inline-flex items-center gap-1 ${
+    className={`terminal-button inline-flex items-center gap-1 ${
       active ? 'active' : ''
     } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
   >
@@ -88,12 +86,10 @@ export const Configuration: React.FC<ConfigurationProps> = ({
   platform,
   variant,
   selectedDeeplink,
-  isVersionMode,
   onEnvironmentTypeSelect,
   onNameSelect,
   onPlatformSelect,
   onVariantSelect,
-  onVersionCheck,
   onContentChange,
   onDeeplinkSelect
 }) => {
@@ -185,44 +181,27 @@ export const Configuration: React.FC<ConfigurationProps> = ({
                 platformControlsPaused ? 'opacity-50 pointer-events-none' : ''
               }`}
             >
-              {isProd && (
-                <span
-                  className="inline-flex items-center gap-1 text-[10px] text-[var(--warning)] mr-1"
-                  title="Production hosts lock the platform to the site allow-list"
-                >
-                  <Lock size={10} aria-hidden />
-                  locked
-                </span>
-              )}
-              {platforms.map((plt) => (
-                <Chip
-                  key={plt.id}
-                  active={platform === plt.id}
-                  disabled={isProd || platformControlsPaused}
-                  title={
-                    isProd
-                      ? `Production lock — ${plt.name} is fixed for this site`
-                      : plt.queryParamsUse
-                  }
-                  onClick={() => onPlatformSelect(plt.id)}
-                >
-                  {plt.name}
-                  {isProd && platform === plt.id ? (
-                    <Lock size={10} className="opacity-60" aria-hidden />
-                  ) : null}
-                </Chip>
-              ))}
-            </div>
-            <div className="platform-tools">
-              <Chip
-                active={isVersionMode}
-                disabled={!name}
-                title="Fetch /version.txt from the domain root (no platform query)"
-                onClick={onVersionCheck}
-              >
-                <Tag size={11} />
-                Version
-              </Chip>
+              {isProd
+                ? platforms.map((plt) => (
+                    <span
+                      key={plt.id}
+                      className="terminal-button is-fixed active"
+                      title={plt.queryParamsUse}
+                    >
+                      {plt.name}
+                    </span>
+                  ))
+                : platforms.map((plt) => (
+                    <Chip
+                      key={plt.id}
+                      active={platform === plt.id}
+                      disabled={platformControlsPaused}
+                      title={plt.queryParamsUse}
+                      onClick={() => onPlatformSelect(plt.id)}
+                    >
+                      {plt.name}
+                    </Chip>
+                  ))}
             </div>
           </FilterRow>
 
@@ -248,12 +227,6 @@ export const Configuration: React.FC<ConfigurationProps> = ({
             )}
           </FilterRow>
 
-          {isProd && !platformControlsPaused && (
-            <StatusMessage tone="warning" className="pt-1.5">
-              Production platform is locked to this site. Change Site to switch platforms.
-            </StatusMessage>
-          )}
-
           {!allowPlatformQuery && (
             <StatusMessage className="pt-1.5">
               DevTools host — no platform query params or deeplink paths.
@@ -276,19 +249,12 @@ export const Configuration: React.FC<ConfigurationProps> = ({
       >
         <div className="content-deeplink-split">
           <div className="content-deeplink-pane content-deeplink-pane-content">
-            <div className="terminal-group-label mb-1.5">Content</div>
             <ContentSearchPanel
               environmentType={environmentType}
               onContentChange={onContentChange}
             />
           </div>
           <div className="content-deeplink-pane content-deeplink-pane-deeplink">
-            <div className="terminal-group-label mb-1.5">Deeplink</div>
-            <p className="text-[length:var(--font-size-meta)] text-[var(--text-muted)] mb-2 leading-snug">
-              {allowDeeplinks
-                ? 'Optional · tap again to clear'
-                : 'Not available on the DevTools host'}
-            </p>
             <DeeplinkPanel
               selectedDeeplink={selectedDeeplink}
               disabled={!allowDeeplinks}

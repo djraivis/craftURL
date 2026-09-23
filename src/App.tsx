@@ -52,7 +52,6 @@ function App() {
           path={builder.path}
           previousValues={builder.previousValues.current}
           isDeeplinksEnabled={builder.isTunerMode ? false : builder.isDeeplinksEnabled}
-          previewMode={builder.previewMode}
           showLegend={builder.showUrlLegend || builder.isTunerMode}
           isTunerMode={builder.isTunerMode}
           retuningSegments={builder.retuningSegments}
@@ -74,18 +73,10 @@ function App() {
         <div className="app-panels">
           <div className="app-panels-inner space-y-[var(--space-stack)]">
             <Header
-              app={builder.app}
-              name={builder.name}
-              environmentType={builder.environmentType}
-              platform={builder.platform}
-              variant={builder.variant}
-              path={builder.path}
-              isDeeplinksEnabled={builder.isDeeplinksEnabled}
-              selectedDeeplink={builder.selectedDeeplink}
-              versionInfo={builder.versionInfo}
-              versionError={builder.versionError}
+              urlReady={Boolean(builder.name && builder.environment)}
+              onCopy={builder.copyToClipboard}
+              onOpen={builder.openUrl}
               showUrlLegend={builder.showUrlLegend}
-              isTunerMode={builder.isTunerMode}
               onToggleUrlLegend={builder.toggleUrlLegend}
               onEnterTunerMode={builder.enterTunerMode}
             />
@@ -96,12 +87,10 @@ function App() {
               platform={builder.platform}
               variant={builder.variant}
               selectedDeeplink={builder.selectedDeeplink}
-              isVersionMode={builder.previewMode === 'version'}
               onEnvironmentTypeSelect={builder.handleEnvironmentTypeSelect}
               onNameSelect={builder.handleNameSelect}
               onPlatformSelect={builder.handlePlatformSelect}
               onVariantSelect={builder.handleVariantSelect}
-              onVersionCheck={builder.checkVersion}
               onContentChange={builder.handleContentChange}
               onDeeplinkSelect={builder.handleDeeplinkSelect}
             />

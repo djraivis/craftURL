@@ -33,6 +33,12 @@ describe('constructUrl', () => {
     );
   });
 
+  it('builds the preprod uktv-debuggable host', () => {
+    expect(constructUrl('ctv', 'uktv-debuggable', 'ppuktv')).toBe(
+      'https://ctv-uktv-debuggable.ppuktv.co.uk'
+    );
+  });
+
   it('uses the bare chromecast host on preprod', () => {
     expect(constructUrl('ctv', 'chromecast', 'ppuktv')).toBe(
       'https://chromecast.ppuktv.co.uk'

@@ -7,7 +7,6 @@ CTV CraftURL is a React + TypeScript Vite app for building UKTV CTV deeplink URL
 External calls (browser → UKTV hosts):
 
 - Schedule API (brand / series / episode lookup)
-- Optional `/version.txt` on the selected CTV host (CORS may block; labeled mock fallback)
 
 ## Layers
 

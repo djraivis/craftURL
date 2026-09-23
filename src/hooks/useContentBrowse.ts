@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ScheduleBrand, ScheduleEpisode } from '../types/schedule';
 import { fetchSeries, searchBrand } from '../utils/scheduleApi';
 
@@ -22,8 +22,12 @@ export function useContentBrowse({
   const [selectedSeriesId, setSelectedSeriesId] = useState('');
   const [episodes, setEpisodes] = useState<ScheduleEpisode[]>([]);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState('');
+  const searchRequest = useRef(0);
+  const seriesRequest = useRef(0);
 
   useEffect(() => {
+    searchRequest.current += 1;
+    seriesRequest.current += 1;
     setQuery('');
     setBrand(null);
     setSelectedSeriesId('');
@@ -39,9 +43,11 @@ export function useContentBrowse({
     seriesId: number | string,
     preferredEpisode: ScheduleEpisode | null
   ) => {
+    const request = ++seriesRequest.current;
     setSeriesLoading(true);
     try {
       const series = await fetchSeries(environmentType, seriesId);
+      if (request !== seriesRequest.current) return;
       const nextEpisodes = series.episodes ?? [];
       setEpisodes(nextEpisodes);
 
@@ -62,6 +68,7 @@ export function useContentBrowse({
         onContentChange(currentBrand, null);
       }
     } catch (err) {
+      if (request !== seriesRequest.current) return;
       setError(err instanceof Error ? err.message : 'Failed to load series');
       if (preferredEpisode) {
         setEpisodes([preferredEpisode]);
@@ -69,7 +76,7 @@ export function useContentBrowse({
         onContentChange(currentBrand, preferredEpisode);
       }
     } finally {
-      setSeriesLoading(false);
+      if (request === seriesRequest.current) setSeriesLoading(false);
     }
   };
 
@@ -109,13 +116,16 @@ export function useContentBrowse({
     const trimmed = rawInput.trim();
     if (!trimmed || loading) return;
 
+    const request = ++searchRequest.current;
     setLoading(true);
     setError(null);
 
     try {
       const { brand: nextBrand } = await searchBrand(environmentType, trimmed);
+      if (request !== searchRequest.current) return;
       applyBrand(nextBrand);
     } catch (err) {
+      if (request !== searchRequest.current) return;
       setBrand(null);
       setSelectedSeriesId('');
       setEpisodes([]);
@@ -123,7 +133,7 @@ export function useContentBrowse({
       onContentChange(null, null);
       setError(err instanceof Error ? err.message : 'Search failed');
     } finally {
-      setLoading(false);
+      if (request === searchRequest.current) setLoading(false);
     }
   };
 

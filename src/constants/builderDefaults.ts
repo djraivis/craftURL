@@ -29,6 +29,5 @@ export const INITIAL_BUILDER_STATE = {
   environment: getEnvironmentDomainForType(DEFAULT_BUILDER_PREFERENCES.environmentType),
   path: '',
   isDeeplinksEnabled: false,
-  selectedDeeplink: '',
-  previewMode: null as 'version' | null
+  selectedDeeplink: ''
 };

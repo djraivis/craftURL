@@ -50,15 +50,6 @@ export type DeeplinkOption = {
   format?: string;
 };
 
-export interface VersionInfo {
-  success: number;
-  version: string;
-  hash?: string;
-  branch?: string;
-  /** True when live /version.txt could not be read (e.g. CORS) and mock data is shown. */
-  isMock?: boolean;
-}
-
 export type RetuneSegment = 'site' | 'environment' | 'platform';
 
 export interface UrlPartProps {
@@ -87,7 +78,6 @@ export interface UrlDisplayProps {
   variant?: string;
   path?: string;
   isDeeplinksEnabled?: boolean;
-  previewMode?: 'version' | null;
   /** When true, annotate each URL segment with its role */
   showLegend?: boolean;
   isTunerMode?: boolean;
@@ -106,7 +96,6 @@ export interface UrlDisplayProps {
     platform: string;
     variant: string;
     path: string;
-    previewMode: 'version' | null;
   };
   onOpen?: () => void;
   /** Returns true when the URL was written to the clipboard. */

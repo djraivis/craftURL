@@ -79,14 +79,9 @@ export function useBuilderState() {
   });
 
   const {
-    previewMode,
-    versionInfo,
-    versionNumber,
-    versionError,
     showUrlLegend,
     copyToClipboard,
     openUrl,
-    checkVersion,
     toggleUrlLegend
   } = useUrlActions({
     app,
@@ -104,8 +99,7 @@ export function useBuilderState() {
     environment: getEnvironmentDomainForType(storedBuilderPreferences.environmentType),
     platform: storedBuilderPreferences.platform,
     variant: storedBuilderPreferences.variant,
-    path: INITIAL_BUILDER_STATE.path,
-    previewMode: INITIAL_BUILDER_STATE.previewMode
+    path: INITIAL_BUILDER_STATE.path
   });
 
   useEffect(() => {
@@ -115,10 +109,9 @@ export function useBuilderState() {
       environment,
       platform,
       variant,
-      path,
-      previewMode
+      path
     };
-  }, [app, name, environment, platform, variant, path, previewMode]);
+  }, [app, name, environment, platform, variant, path]);
 
   return {
     app,
@@ -130,10 +123,6 @@ export function useBuilderState() {
     path,
     isDeeplinksEnabled,
     selectedDeeplink,
-    previewMode,
-    versionInfo,
-    versionNumber,
-    versionError,
     showUrlLegend,
     isTunerMode,
     isRetuning,
@@ -157,7 +146,6 @@ export function useBuilderState() {
     retune,
     copyToClipboard,
     openUrl,
-    checkVersion,
     toggleUrlLegend
   };
 }

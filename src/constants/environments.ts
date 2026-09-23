@@ -186,6 +186,12 @@ export const CTV_PREPROD_ENVIRONMENTS: Name[] = [
     description: 'ctv-uktv.ppuktv.co.uk'
   },
   {
+    id: 'uktv-debuggable',
+    name: 'UKTV / debuggable',
+    domain: 'uktv-debuggable',
+    description: 'ctv-uktv-debuggable.ppuktv.co.uk'
+  },
+  {
     id: 'partners',
     name: 'Partners',
     domain: 'partners',

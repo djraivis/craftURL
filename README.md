@@ -15,7 +15,6 @@ Builds always-HTTPS CTV host URLs with optional platform query params and deepli
 - **Result thumb** — Episode/brand image via UKTV Cloudinary named transform (`t_house_number_tool_card_square`)
 - **URL bar** — Segmented live URL; **Legend** expands/centers the full URL and hides Copy/Load for inspection
 - **Tuner** — Full-viewport URL-only mode; edit Site / Environment / Platform in place; **Retune** spins each segment like a soft slot reel (Esc / Exit to leave)
-- **Version check** — Fetches `/version.txt` on the selected host (CORS may fall back to a labeled placeholder)
 - **Transmission theme** — Studio bench UI with ink URL ribbon
 
 ## How it works
@@ -69,7 +68,7 @@ Unit tests cover URL construction, deeplink templates, Host/Tuner sync, prod var
 2. Netlify → **Import an existing project** → select the repo
 3. Build command / publish dir should come from `netlify.toml` automatically
 
-**CORS note:** Schedule search and `/version.txt` call UKTV hosts from the browser. Localhost or allowed origins work; a public Netlify origin may be blocked. Version check shows a labeled placeholder when blocked; content search surfaces an error. Add a Netlify proxy later if live calls must work from the deployed site.
+**CORS note:** Schedule search calls UKTV hosts from the browser. Localhost or allowed origins work; a public Netlify origin may be blocked, and content search surfaces an error. Add a Netlify proxy later if live calls must work from the deployed site.
 
 ### CI
 

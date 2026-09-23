@@ -1,38 +1,26 @@
-/* Layout — panels, content split, section tones, info slot */
+/* Layout — panels, content split, section tones */
 .app-panels {
-  min-height: 100vh;
   width: 100%;
-  padding: var(--space-stack) var(--layout-pad-x) calc(var(--space-page) + 0.75rem);
+  padding-block: var(--space-stack) calc(var(--space-page) + 0.75rem);
+  padding-inline: max(var(--layout-pad-x), env(safe-area-inset-left))
+    max(var(--layout-pad-x), env(safe-area-inset-right));
   box-sizing: border-box;
 }
 
 .app-panels-inner {
   width: 100%;
-  max-width: var(--layout-width);
-  margin-inline: auto;
 }
 
 @media (min-width: 640px) {
-  :root,
-  [data-theme='transmission'] {
-    --layout-pad-x: calc(var(--space-page) + 0.25rem);
-  }
-
   .app-panels {
     padding-top: 2.5rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .app-panels-inner {
-    max-width: 100%;
   }
 }
 
 .content-deeplink-split {
   display: flex;
   flex-direction: column;
-  gap: var(--space-stack);
+  gap: 0.75rem;
 }
 
 .content-deeplink-pane {
@@ -40,7 +28,7 @@
 }
 
 .content-deeplink-pane-deeplink {
-  padding-top: var(--space-group);
+  padding-top: 0.65rem;
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -48,7 +36,7 @@
   .content-deeplink-split {
     flex-direction: row;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .content-deeplink-pane-content {
@@ -59,7 +47,7 @@
     width: min(26rem, 36%);
     flex-shrink: 0;
     padding-top: 0;
-    padding-left: 1rem;
+    padding-left: 0.75rem;
     border-top: 0;
     border-left: 1px solid var(--border-subtle);
   }
@@ -154,20 +142,6 @@
 
 .section-tone-b .terminal-section-content {
   background: color-mix(in srgb, var(--section-b-soft) 40%, var(--bg-elevated));
-}
-
-/* Info panel: reserve ~3 fact lines so the layout does not jump */
-.detail-panel-slot {
-  box-sizing: border-box;
-  padding: 0.85rem 1.1rem;
-  border-left: 3px solid var(--accent);
-  background: var(--bg-elevated);
-}
-
-.detail-panel-body {
-  /* 3 lines (leading-snug) + 2 gaps (0.375rem) */
-  min-height: calc(3 * 1.375em + 0.75rem);
-  font-size: var(--font-size-body);
 }
 
 .filter-row-variants {

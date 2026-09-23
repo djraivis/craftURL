@@ -31,7 +31,7 @@ export const DeeplinkPanel: React.FC<DeeplinkPanelProps> = ({
 
   return (
     <div
-      className={`grid grid-cols-2 gap-1.5 w-full min-w-0 ${
+      className={`grid grid-cols-2 gap-1 w-full min-w-0 ${
         disabled ? 'opacity-50 pointer-events-none' : ''
       }`}
       aria-disabled={disabled}
@@ -43,7 +43,7 @@ export const DeeplinkPanel: React.FC<DeeplinkPanelProps> = ({
           onClick={() => handleSelect(option)}
           disabled={disabled}
           aria-pressed={selectedDeeplink === option.id}
-          className={`terminal-button !h-auto !min-h-8 justify-start text-left text-[11px] px-2.5 py-1.5 ${
+          className={`terminal-button justify-start text-left ${
             selectedDeeplink === option.id ? 'active' : ''
           }`}
           title={
@@ -52,14 +52,7 @@ export const DeeplinkPanel: React.FC<DeeplinkPanelProps> = ({
               : [option.destination, option.format].filter(Boolean).join(' · ')
           }
         >
-          <span className="flex flex-col items-start gap-0.5 min-w-0 w-full">
-            <span className="truncate w-full font-medium">{option.name}</span>
-            {option.destination && option.destination !== option.name ? (
-              <span className="truncate w-full text-[10px] text-[var(--text-muted)]">
-                {option.destination}
-              </span>
-            ) : null}
-          </span>
+          <span className="truncate w-full font-medium">{option.name}</span>
         </button>
       ))}
     </div>

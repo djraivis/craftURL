@@ -59,20 +59,20 @@
   --space-section: 1rem;
   --space-group: 0.85rem;
   --space-stack: 1.35rem;
-  /* Shared content rail — URL bar + Host/Content panels */
-  --layout-max: 72rem;
-  --layout-width: min(80%, var(--layout-max));
-  --layout-pad-x: var(--space-page);
-  --control-height: 2.15rem;
+  /* Fluid page gutter. The shell is full viewport width; this inset scales with the screen. */
+  --layout-pad-x: clamp(1rem, 2.2vw, 2.25rem);
+  /* UI type tracks CSS width, which is what laptops actually give the page:
+     ~1280px (13"), ~1512px (14"), ~1728px (16"), ~1920px (large window). */
+  --control-height: clamp(2.25rem, 2.05rem + 0.35vw, 2.5rem);
   --control-pad-x: 0.85rem;
-  --control-pad-y: 0.45rem;
-  --control-font: 0.8125rem;
+  --control-pad-y: 0.4rem;
+  --control-font: clamp(0.875rem, 0.625rem + 0.3125vw, 1rem);
   --label-gap: 0.35rem;
 
-  --font-size-label: 0.6875rem;
-  --font-size-meta: 0.75rem;
-  --font-size-ui: 0.8125rem;
-  --font-size-body: 0.875rem;
+  --font-size-label: clamp(0.75rem, 0.65rem + 0.15vw, 0.8125rem);
+  --font-size-meta: clamp(0.8125rem, 0.68rem + 0.18vw, 0.875rem);
+  --font-size-ui: var(--control-font);
+  --font-size-body: clamp(0.9375rem, 0.85rem + 0.16vw, 1rem);
   --font-size-brand: clamp(1.85rem, 3.2vw, 2.35rem);
 
   --shadow-surface: 0 1px 0 rgba(255, 255, 255, 0.65) inset, 0 10px 28px rgba(20, 32, 54, 0.08);

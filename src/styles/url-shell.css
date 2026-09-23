@@ -16,8 +16,9 @@
   border-radius: 0;
   box-shadow: 0 18px 40px rgba(18, 21, 28, 0.28);
   overflow: hidden;
-  /* Same horizontal inset as .app-panels so the URL rail lines up with CTV title */
-  padding-inline: var(--layout-pad-x);
+  /* Same horizontal inset as .app-panels so the URL rail lines up with the title */
+  padding-inline: max(var(--layout-pad-x), env(safe-area-inset-left))
+    max(var(--layout-pad-x), env(safe-area-inset-right));
   transition: border-color 0.45s ease, box-shadow 0.45s ease, background 0.45s ease;
 }
 
@@ -32,8 +33,9 @@
 .url-hero-row {
   display: flex;
   align-items: stretch;
+  justify-content: center;
   width: 100%;
-  max-width: var(--layout-width);
+  max-width: none;
   margin-inline: auto;
   min-height: 5.25rem;
   padding: 1rem 0;
@@ -60,26 +62,34 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  overflow-x: auto;
-  overflow-y: hidden;
+  justify-content: center;
+  overflow: hidden;
   padding: 0.5rem 0;
   font-family: var(--font-mono);
   font-size: clamp(1rem, 1.55vw, 1.35rem);
   font-weight: 500;
   letter-spacing: -0.015em;
   line-height: 1.5;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
 .url-hero-track-inner {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
   width: max-content;
   max-width: none;
   min-width: 0;
   white-space: nowrap;
+}
+
+/* Fit by shrinking type — never ellipsis or a horizontal scrollbar */
+.url-hero-shell:not(.url-tuner-shell) .url-segment-value,
+.url-hero-shell:not(.url-tuner-shell) .url-segment-value .url-text {
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .url-legend-on .url-hero-row {
@@ -109,10 +119,9 @@
 }
 
 .url-legend-on .url-hero-track {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   justify-content: center;
-  /* Full URL can still exceed the viewport; scroll the track, don't clip */
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .url-legend-on .url-hero-track-inner {

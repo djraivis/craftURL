@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import type { ScheduleBrand, ScheduleEpisode } from '../types/schedule';
 import type { BrandSuggestion } from '../utils/brandSuggestions';
 import { toCloudinaryThumbUrl } from '../utils/cloudinary';
-import { detectSearchMode, searchModeLabel } from '../utils/scheduleSearch';
 import { useBrandSuggest } from '../hooks/useBrandSuggest';
 import { useContentBrowse } from '../hooks/useContentBrowse';
 import { BrandSearchInput } from './content/BrandSearchInput';
@@ -27,11 +26,6 @@ export const ContentSearchPanel: React.FC<ContentSearchPanelProps> = ({
     disabled: browse.loading,
     resetKey: environmentType
   });
-
-  const previewMode = useMemo(
-    () => detectSearchMode(browse.query),
-    [browse.query]
-  );
 
   const resultThumb = toCloudinaryThumbUrl(
     browse.selectedEpisode?.image || browse.brand?.image || null
@@ -61,7 +55,7 @@ export const ContentSearchPanel: React.FC<ContentSearchPanelProps> = ({
           query={browse.query}
           loading={browse.loading}
           invalid={Boolean(browse.error)}
-          describedBy="content-search-status"
+          describedBy={browse.error ? 'content-search-status' : undefined}
           suggestions={suggest.suggestions}
           showSuggestions={suggest.showSuggestions}
           activeIndex={suggest.activeIndex}
@@ -88,38 +82,14 @@ export const ContentSearchPanel: React.FC<ContentSearchPanelProps> = ({
         />
       </form>
 
-      <div id="content-search-status" className="space-y-1.5 pt-0.5">
-        {!browse.query.trim() && !browse.brand && !browse.error && (
-          <StatusMessage>
-            Focus search for local title ideas, then Enter looks up the live
-            schedule for series and episodes.
-          </StatusMessage>
-        )}
+      {browse.error ? (
+        <StatusMessage id="content-search-status" tone="error">
+          {browse.error}
+        </StatusMessage>
+      ) : null}
 
-        {browse.error && (
-          <StatusMessage tone="error">{browse.error}</StatusMessage>
-        )}
-
-        {browse.query.trim() && !browse.brand && !browse.error && (
-          <StatusMessage>
-            Lookup as{' '}
-            <span className="text-[var(--text-secondary)]">
-              {searchModeLabel(previewMode.mode)}
-            </span>
-            {previewMode.value ? (
-              <>
-                {' '}
-                ·{' '}
-                <span className="font-mono text-[var(--accent)]">
-                  {previewMode.value}
-                </span>
-              </>
-            ) : null}
-            . Press Enter to search the schedule.
-          </StatusMessage>
-        )}
-
-        {browse.brand && (
+      <div className="content-search-result-slot">
+        {browse.brand ? (
           <div className="content-search-result">
             {resultThumb ? (
               <img
@@ -165,17 +135,7 @@ export const ContentSearchPanel: React.FC<ContentSearchPanelProps> = ({
               ) : null}
             </div>
           </div>
-        )}
-
-        {browse.brand &&
-          !browse.selectedEpisode &&
-          !browse.seriesLoading &&
-          !browse.error && (
-            <StatusMessage tone="warning">
-              Series loaded — choose an episode to fill house number / video id
-              placeholders.
-            </StatusMessage>
-          )}
+        ) : null}
       </div>
     </div>
   );

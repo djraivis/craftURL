@@ -32,14 +32,3 @@ export function detectSearchMode(input: string): {
 
   return { mode: 'slug', value: toBrandSlug(trimmed) };
 }
-
-export function searchModeLabel(mode: ScheduleSearchMode): string {
-  switch (mode) {
-    case 'id':
-      return 'Brand ID';
-    case 'house_number':
-      return 'House number';
-    case 'slug':
-      return 'Brand slug';
-  }
-}

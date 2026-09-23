@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { UrlDisplayProps } from '../types';
 import { getPlatformQueryString } from '../utils/urlBuilder';
@@ -21,7 +21,6 @@ export const UrlDisplay = memo<UrlDisplayProps>(
     variant,
     path,
     isDeeplinksEnabled,
-    previewMode,
     showLegend = false,
     isTunerMode = false,
     retuningSegments = [],
@@ -41,6 +40,8 @@ export const UrlDisplay = memo<UrlDisplayProps>(
     const [openSegment, setOpenSegment] = useState<SegmentKey | null>(null);
     const [focusedSegment, setFocusedSegment] = useState<SegmentKey>('site');
     const shellRef = useRef<HTMLDivElement>(null);
+    const trackRef = useRef<HTMLDivElement>(null);
+    const trackInnerRef = useRef<HTMLDivElement>(null);
 
     const getPlaceholder = (part: string) => `<${part}>`;
     const complete = Boolean(name && environment);
@@ -66,6 +67,60 @@ export const UrlDisplay = memo<UrlDisplayProps>(
       }
     }, [isTunerMode]);
 
+    useLayoutEffect(() => {
+      if (isTunerMode) return;
+      const track = trackRef.current;
+      const inner = trackInnerRef.current;
+      if (!track || !inner) return;
+
+      let fittedWidth = -1;
+
+      const fit = () => {
+        const available = track.clientWidth;
+        if (!available || available === fittedWidth) return;
+        fittedWidth = available;
+
+        inner.style.fontSize = '';
+        const maxPx = parseFloat(getComputedStyle(inner).fontSize);
+        if (!maxPx) return;
+
+        if (inner.scrollWidth <= available) return;
+
+        const minPx = 8;
+        let low = minPx;
+        let high = maxPx;
+        for (let i = 0; i < 10; i += 1) {
+          const mid = (low + high) / 2;
+          inner.style.fontSize = `${mid}px`;
+          if (inner.scrollWidth <= available) low = mid;
+          else high = mid;
+        }
+        inner.style.fontSize = `${low}px`;
+        if (inner.scrollWidth > available) {
+          const ratio = available / inner.scrollWidth;
+          inner.style.fontSize = `${Math.max(6, low * ratio)}px`;
+        }
+      };
+
+      fit();
+      const observer = new ResizeObserver(fit);
+      observer.observe(track);
+      return () => {
+        observer.disconnect();
+        inner.style.fontSize = '';
+      };
+    }, [
+      isTunerMode,
+      app,
+      name,
+      environment,
+      platform,
+      variant,
+      path,
+      isDeeplinksEnabled,
+      showSegmentLabels
+    ]);
+
     useEffect(() => {
       if (retuningSegments.length > 0) {
         setOpenSegment(null);
@@ -86,11 +141,9 @@ export const UrlDisplay = memo<UrlDisplayProps>(
     }, [openSegment]);
 
     const queryParams = getPlatformQueryString(platform, variant);
-    const versionPath = previewMode === 'version' ? '/version.txt' : '';
     // Platform query sits after the deeplink path (when any). DevTools omits it.
     const showPlatformSegment =
-      !versionPath &&
-      (Boolean(queryParams) || (tunerInteractive && Boolean(platform)));
+      Boolean(queryParams) || (tunerInteractive && Boolean(platform));
     const platformInteractive =
       tunerInteractive && showPlatformSegment && platformOptions.length > 1;
     const navOrder = useMemo(
@@ -159,7 +212,7 @@ export const UrlDisplay = memo<UrlDisplayProps>(
     const appText = app ? (isAppSelected ? app : getPlaceholder('app')) : getPlaceholder('app');
     const nameText = name || getPlaceholder('name');
     const hasDeeplinkPath = Boolean(path && isDeeplinksEnabled);
-    const showDeeplinkPlaceholder = Boolean(!versionPath && isDeeplinksEnabled && !path);
+    const showDeeplinkPlaceholder = Boolean(isDeeplinksEnabled && !path);
     const reduceMotion = useReducedMotion();
 
     return (
@@ -173,8 +226,8 @@ export const UrlDisplay = memo<UrlDisplayProps>(
         className={`url-hero-shell ${complete ? 'url-hero-complete' : ''} ${showSegmentLabels ? 'url-legend-on' : ''} ${isTunerMode ? 'url-tuner-shell' : ''}`}
       >
         <div className={`url-hero-row ${isTunerMode ? 'url-tuner-row' : ''}`}>
-          <div className="url-hero-track">
-            <div className="url-hero-track-inner">
+          <div className="url-hero-track" ref={trackRef}>
+            <div className="url-hero-track-inner" ref={trackInnerRef}>
               <UrlSegment legend={legend} showLabel={showSegmentLabels} label="Protocol">
                 <UrlPart text="https://" partKey="https" isPrimary isActive isComplete={complete} />
               </UrlSegment>
@@ -263,20 +316,7 @@ export const UrlDisplay = memo<UrlDisplayProps>(
                 <UrlPart text=".co.uk" isPrimary isActive isComplete={complete} />
               </UrlSegment>
 
-              {versionPath ? (
-                <UrlSegment legend={legend} showLabel={showSegmentLabels} label="Version">
-                  <UrlPart
-                    text={versionPath}
-                    partKey="version-path"
-                    isActive
-                    shouldAnimate={previewMode !== previousValues.previewMode}
-                    isComplete={complete}
-                    isPrimary
-                  />
-                </UrlSegment>
-              ) : (
-                <>
-                  {hasDeeplinkPath && !tunerInteractive ? (
+              {hasDeeplinkPath && !tunerInteractive ? (
                     <UrlSegment legend={legend} showLabel={showSegmentLabels} label="Deeplink">
                       <UrlPart text="/" isPrimary isActive isComplete={complete} />
                       <UrlPart
@@ -351,17 +391,9 @@ export const UrlDisplay = memo<UrlDisplayProps>(
                       )}
                     </UrlSegment>
                   ) : null}
-                </>
-              )}
             </div>
           </div>
 
-          {!isTunerMode && !showSegmentLabels && (
-            <div className="url-hero-actions">
-              <CopyButton isComplete={complete} onClick={onCopy} />
-              <LoadButton isComplete={complete} onClick={onOpen} />
-            </div>
-          )}
         </div>
 
         {isTunerMode && (
